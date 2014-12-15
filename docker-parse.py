@@ -27,11 +27,13 @@ for info in infos:
     if len(hconf["PortBindings"]) > 0:
         for k, v in hconf['PortBindings'].iteritems():
             for hv in v:
-                ports += ' -p ' + k
+                ports += ' -p '
                 if 'HostIp' in hv:
-                    ports += ':' + hv['HostIp']
+                    ports += hv['HostIp'] + ':'
                 if 'HostPort' in hv: 
-                    ports += ':' + hv['HostPort']
+                    ports += hv['HostPort'] + ':'
+                ports += k
+                
     print 'docker run --name {name} -d {volumes} {ports} {image}'.format(
         name = name, volumes = volumes, ports = ports, image = conf['Image'])
 
