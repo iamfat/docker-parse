@@ -4,6 +4,5 @@
 再加上Python初学.. 以后有空再慢慢改进
 
 ```bash
-sudo cp docker-parse.py /usr/local/bin/docker-parse
-docker-parse <container>
+sudo pip install docker-parse
 ```
