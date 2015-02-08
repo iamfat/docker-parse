@@ -22,22 +22,30 @@ def main():
         name = info['Name'][1:]
         conf = info['Config']
         hconf = info['HostConfig']
-        volumes = ''; ports = ''
+
+        misc = ''
 
         if len(hconf["Binds"]) > 0:
-            volumes = ' -v ' + ' -v '.join(hconf['Binds'])
+            misc = ' -v ' + ' -v '.join(hconf['Binds'])
+
         if len(hconf["PortBindings"]) > 0:
             for k, v in hconf['PortBindings'].items():
                 for hv in v:
-                    ports += ' -p '
+                    misc += ' -p '
                     if 'HostIp' in hv:
-                        ports += hv['HostIp'] + ':'
+                        misc += hv['HostIp'] + ':'
                     if 'HostPort' in hv: 
-                        ports += hv['HostPort'] + ':'
-                    ports += k
-                
-        print('docker run --name {name} -d {volumes} {ports} {image}'.format(
-            name = name, volumes = volumes, ports = ports, image = conf['Image']))
+                        misc += hv['HostPort'] + ':'
+                    misc += k
+
+        if 'RestartPolicy' in hconf:
+            if 'MaximumRetryCount' in hconf['RestartPolicy']:
+                misc += ' --restart=' + hconf['RestartPolicy']['Name'] + ':' + str(hconf['RestartPolicy']['MaximumRetryCount'])
+            else:
+                misc += ' --restart=' + hconf['RestartPolicy']['Name']
+
+        print('docker run --name {name} -d{misc} {image}'.format(
+            name = name, misc = misc, image = conf['Image']))
 
 if __name__ == "__main__":
     main()
