@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='docker-parse',
 
-    version='0.1.1',
+    version='0.1.2',
 
     description='Parse docker-run options from a running Docker container',
 

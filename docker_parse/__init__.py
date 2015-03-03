@@ -38,8 +38,8 @@ def main():
                         misc += hv['HostPort'] + ':'
                     misc += k
 
-        if 'RestartPolicy' in hconf:
-            if 'MaximumRetryCount' in hconf['RestartPolicy']:
+        if hconf['RestartPolicy']['Name']:
+            if hconf['RestartPolicy']['MaximumRetryCount'] > 0:
                 misc += ' --restart=' + hconf['RestartPolicy']['Name'] + ':' + str(hconf['RestartPolicy']['MaximumRetryCount'])
             else:
                 misc += ' --restart=' + hconf['RestartPolicy']['Name']
