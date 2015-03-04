@@ -5,6 +5,7 @@ from __future__ import print_function
 import json
 import subprocess
 import sys
+import pipes
 
 
 def main():
@@ -27,7 +28,7 @@ def main():
 
         misc = ''
 
-        if len(hconf["Binds"]) > 0:
+        if isinstance(hconf["Binds"], list) and len(hconf["Binds"]) > 0:
             misc = ' -v ' + ' -v '.join(hconf['Binds'])
 
         if len(hconf["PortBindings"]) > 0:
@@ -47,8 +48,16 @@ def main():
             else:
                 misc += restart_str
 
-        print('docker run --name {name} -d{misc} {image}'.format(
-            name=name, misc=misc, image=conf['Image']))
+        for v in conf['Env']:
+            misc += ' -e {}'.format(pipes.quote(v))
+
+        cmd = ''
+        for v in conf['Cmd']:
+            cmd += ' {}'.format(pipes.quote(v))
+
+        print('docker run --name {name} -d{misc} {image}{cmd}'.format(
+            name=name, misc=misc,
+            image=conf['Image'], cmd=cmd))
 
 if __name__ == "__main__":
     main()
