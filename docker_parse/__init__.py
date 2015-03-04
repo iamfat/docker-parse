@@ -3,20 +3,22 @@
 
 from __future__ import print_function
 import json
-import subprocess, sys
+import subprocess
+import sys
+
 
 def main():
     if len(sys.argv) < 2:
         print("Please specific container name!")
         sys.exit()
-    
+
     try:
         cmd = ["docker", "inspect"]
         cmd.extend(sys.argv[1:])
         output = subprocess.check_output(cmd, universal_newlines=True)
     except subprocess.CalledProcessError as e:
         sys.exit()
-    
+
     infos = json.loads(output)
     for info in infos:
         name = info['Name'][1:]
@@ -34,18 +36,19 @@ def main():
                     misc += ' -p '
                     if 'HostIp' in hv:
                         misc += hv['HostIp'] + ':'
-                    if 'HostPort' in hv: 
+                    if 'HostPort' in hv:
                         misc += hv['HostPort'] + ':'
                     misc += k
 
         if hconf['RestartPolicy']['Name']:
+            restart_str = ' --restart=' + hconf['RestartPolicy']['Name']
             if hconf['RestartPolicy']['MaximumRetryCount'] > 0:
-                misc += ' --restart=' + hconf['RestartPolicy']['Name'] + ':' + str(hconf['RestartPolicy']['MaximumRetryCount'])
+                misc += restart_str + ':' + str(hconf['RestartPolicy']['MaximumRetryCount'])
             else:
-                misc += ' --restart=' + hconf['RestartPolicy']['Name']
+                misc += restart_str
 
         print('docker run --name {name} -d{misc} {image}'.format(
-            name = name, misc = misc, image = conf['Image']))
+            name=name, misc=misc, image=conf['Image']))
 
 if __name__ == "__main__":
     main()
