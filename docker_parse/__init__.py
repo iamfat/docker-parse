@@ -6,6 +6,7 @@ import json
 import subprocess
 import sys
 import pipes
+import getopt
 
 
 def main():
@@ -14,50 +15,84 @@ def main():
         sys.exit()
 
     try:
+        opts, args = getopt.getopt(sys.argv[1:], "p", ["pretty"])
+    except getopt.GetoptError as e:
+        print("Usage: docker-parse [--pretty|-p] <container>")
+        sys.exit(2)
+
+    if len(args) > 0:
+        container = args[0]
+    else:
+        print("Please specific container name!")
+        sys.exit()
+
+    sep = ' '
+    for o, a in opts:
+        if o == "-p" or o == "--pretty":
+            sep = ' \\\n    '
+
+    try:
         cmd = ["docker", "inspect"]
-        cmd.extend(sys.argv[1:])
+        cmd.extend([container])
         output = subprocess.check_output(cmd, universal_newlines=True)
     except subprocess.CalledProcessError as e:
         sys.exit()
 
     infos = json.loads(output)
     for info in infos:
-        name = info['Name'][1:]
+
+        short_options = ''
+        options = []
+
         conf = info['Config']
         hconf = info['HostConfig']
 
-        misc = ''
+        options.append("--name {name}".format(name=info['Name'][1:]))
+
+        if not conf['AttachStdout']:
+            short_options += 'd'
+
+        if conf['OpenStdin']:
+            short_options += 'i'
+
+        if conf['Tty']:
+            short_options += 't'
+
+        if (len(short_options) > 0):
+            options.append('-' + short_options)
+
+        options.append("-h {hostname}".format(hostname=conf['Hostname']))
 
         if isinstance(hconf["Binds"], list) and len(hconf["Binds"]) > 0:
-            misc = ' -v ' + ' -v '.join(hconf['Binds'])
+            for v in hconf['Binds']:
+                options.append("-v {binds}".format(binds=v))
 
         if len(hconf["PortBindings"]) > 0:
             for k, v in hconf['PortBindings'].items():
                 for hv in v:
-                    misc += ' -p '
-                    if 'HostIp' in hv:
-                        misc += hv['HostIp'] + ':'
-                    if 'HostPort' in hv:
-                        misc += hv['HostPort'] + ':'
-                    misc += k
+                    portbinding = ''
+                    if 'HostIp' in hv and hv['HostIp']:
+                        portbinding += hv['HostIp'] + ':'
+                    if 'HostPort' in hv and hv['HostPort']:
+                        portbinding += hv['HostPort'] + ':'
+                    portbinding += k
+                    options.append("-p {portbinding}".format(portbinding=portbinding))
 
         if hconf['RestartPolicy']['Name']:
-            restart_str = ' --restart=' + hconf['RestartPolicy']['Name']
+            policy = hconf['RestartPolicy']['Name']
             if hconf['RestartPolicy']['MaximumRetryCount'] > 0:
-                misc += restart_str + ':' + str(hconf['RestartPolicy']['MaximumRetryCount'])
-            else:
-                misc += restart_str
+                policy += ':' + str(hconf['RestartPolicy']['MaximumRetryCount'])
+            options.append("--restart={policy}".format(policy=policy))
 
         for v in conf['Env']:
-            misc += ' -e {}'.format(pipes.quote(v))
+            options.append("-e={env}".format(env=pipes.quote(v)))
 
-        cmd = ''
+        cmd = []
         for v in conf['Cmd']:
-            cmd += ' {}'.format(pipes.quote(v))
+            cmd.append(pipes.quote(v))
 
-        print('docker run --name {name} -d{misc} {image}{cmd}'.format(
-            name=name, misc=misc,
-            image=conf['Image'], cmd=cmd))
+        print('docker run {options} {image} {cmd}'.format(
+            options=sep.join(options), image=conf['Image'], cmd=sep + ' '.join(cmd)))
 
 if __name__ == "__main__":
     main()
