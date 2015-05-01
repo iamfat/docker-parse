@@ -63,11 +63,11 @@ def main():
 
         options.append("-h {hostname}".format(hostname=conf['Hostname']))
 
-        if isinstance(hconf["Binds"], list) and len(hconf["Binds"]) > 0:
+        if 'Binds' in hconf and isinstance(hconf['Binds'], list):
             for v in hconf['Binds']:
                 options.append("-v {binds}".format(binds=v))
 
-        if len(hconf["PortBindings"]) > 0:
+        if 'PortBindings' in hconf and isinstance(hconf['Binds'], dict):
             for k, v in hconf['PortBindings'].items():
                 for hv in v:
                     portbinding = ''
@@ -78,7 +78,7 @@ def main():
                     portbinding += k
                     options.append("-p {portbinding}".format(portbinding=portbinding))
 
-        if hconf['RestartPolicy']['Name']:
+        if 'RestartPolicy' in hconf and hconf['RestartPolicy']['Name']:
             policy = hconf['RestartPolicy']['Name']
             if hconf['RestartPolicy']['MaximumRetryCount'] > 0:
                 policy += ':' + str(hconf['RestartPolicy']['MaximumRetryCount'])
