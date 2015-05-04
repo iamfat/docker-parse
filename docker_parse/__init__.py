@@ -67,7 +67,7 @@ def main():
             for v in hconf['Binds']:
                 options.append("-v {binds}".format(binds=v))
 
-        if 'PortBindings' in hconf and isinstance(hconf['Binds'], dict):
+        if 'PortBindings' in hconf and isinstance(hconf['PortBindings'], dict):
             for k, v in hconf['PortBindings'].items():
                 for hv in v:
                     portbinding = ''
