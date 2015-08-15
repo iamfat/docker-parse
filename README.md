@@ -27,7 +27,7 @@ sudo pip install docker-parse
 * Runtime privilege, Linux capabilities, and LXC configuration
     * `--cap-add`
     * `--cap-drop`
-    * `--privileged=false`
+    * ~~`--privileged=false`~~
     * `--device=[]`
     * `--lxc-conf=[]`
 * Overriding Dockerfile image defaults

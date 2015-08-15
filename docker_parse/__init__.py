@@ -84,6 +84,9 @@ def main():
                 policy += ':' + str(hconf['RestartPolicy']['MaximumRetryCount'])
             options.append("--restart={policy}".format(policy=policy))
 
+        if hconf['Privileged']:
+            options.append('--privileged')
+
         for v in conf['Env']:
             options.append("-e={env}".format(env=pipes.quote(v)))
 
