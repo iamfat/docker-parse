@@ -32,7 +32,7 @@ sudo pip install docker-parse
     * `--lxc-conf=[]`
 * Overriding Dockerfile image defaults
     * ~~CMD (Default Command or Options)~~
-    * `--entrypoint=""`
+    * ~~`--entrypoint=""`~~
     * `--expose=[]`
     * `-P=false`
     * ~~`-p=[]`~~

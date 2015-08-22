@@ -87,12 +87,19 @@ def main():
         if hconf['Privileged']:
             options.append('--privileged')
 
-        for v in conf['Env']:
-            options.append("-e={env}".format(env=pipes.quote(v)))
+        if type(conf['Env']) is list :
+            for v in conf['Env']:
+                options.append("-e={env}".format(env=pipes.quote(v)))
+
+        if conf['Entrypoint'] :
+            options.append("--entrypoint={entry}".format(entry=pipes.quote(conf['Entrypoint'])))
 
         cmd = []
-        for v in conf['Cmd']:
-            cmd.append(pipes.quote(v))
+        if type(conf['Cmd']) is list :
+            for v in conf['Cmd']:
+                cmd.append(pipes.quote(v))
+        elif type(conf['Cmd']) is str:
+            cmd.append(pipes.quote(conf['Cmd']))
 
         print('docker run {options} {image} {cmd}'.format(
             options=sep.join(options), image=conf['Image'], cmd=sep + ' '.join(cmd)))
