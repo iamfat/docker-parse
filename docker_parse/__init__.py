@@ -101,8 +101,8 @@ def main():
         elif type(conf['Cmd']) is str:
             cmd.append(pipes.quote(conf['Cmd']))
 
-        print('docker run {options} {image} {cmd}'.format(
-            options=sep.join(options), image=conf['Image'], cmd=sep + ' '.join(cmd)))
+        print('docker run{sep}{options}{sep}{image}{sep}{cmd}'.format(
+            options=sep.join(options), sep=sep, image=conf['Image'], cmd=' '.join(cmd)))
 
 if __name__ == "__main__":
     main()
