@@ -91,8 +91,15 @@ def main():
             for v in conf['Env']:
                 options.append("-e={env}".format(env=pipes.quote(v)))
 
-        if conf['Entrypoint'] :
-            options.append("--entrypoint={entry}".format(entry=pipes.quote(conf['Entrypoint'])))
+        entry = []
+        if type(conf['Entrypoint']) is list :
+            for v in conf['Entrypoint']:
+                entry.append(pipes.quote(v))
+        elif type(conf['Entrypoint']) is str :
+            entry.append(pipes.quote(conf['Entrypoint']))
+        
+        if (len(entry) > 0):
+            options.append("--entrypoint={entry}".format(entry=' '.join(entry)))
 
         cmd = []
         if type(conf['Cmd']) is list :
