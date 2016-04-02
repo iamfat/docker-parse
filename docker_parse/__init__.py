@@ -60,7 +60,7 @@ def output_compose(info, image_info):
 
     # Privileged
     if hconf['Privileged']:
-        compose['privileged'] = true
+        compose['privileged'] = True
 
     # Env
     if type(conf['Env']) is list and len(conf['Env']) > 0:
