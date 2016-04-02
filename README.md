@@ -8,14 +8,14 @@ sudo pip install docker-parse
 ```
 
 ## TODO
-* Foreground or Detached (`-d`)
+* ~~Foreground or Detached (`-d`)~~
 * Container Identification
     * ~~Name (`--name`)~~
     * PID equivalent (`--cidfile=""`)
 * PID Settings (`--pid=""`)
 * IPC Settings (`--ipc=""`)
 * Network settings
-    * `--dns=[]`
+    * ~`--dns=[]`~
     * `--net="bridge"`
     * `--add-host=""`
     * `--mac-address=""`
@@ -33,7 +33,7 @@ sudo pip install docker-parse
 * Overriding Dockerfile image defaults
     * ~~CMD (Default Command or Options)~~
     * ~~`--entrypoint=""`~~
-    * `--expose=[]`
+    * ~~`--expose=[]`~~
     * `-P=false`
     * ~~`-p=[]`~~
     * `--link=""`

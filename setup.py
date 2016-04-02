@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='docker-parse',
-    version='0.2.0',
+    version='0.3.0',
     description='Parse docker-run options from a running Docker container',
     url='https://github.com/iamfat/docker-parse',
     author="Jia Huang",
@@ -14,7 +14,7 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
 
         # Indicate who your project is intended for
         'Intended Audience :: Developers',
