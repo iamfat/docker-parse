@@ -5,6 +5,17 @@
 
 ```bash
 sudo pip install docker-parse
+
+## export docker-run command
+```bash
+docker-parse [container]
+docker -p|--pretty [container]
+```
+
+## export docker-compose yaml
+```bash
+docker-parse [container]
+docker -c|--compose [container]
 ```
 
 ## TODO
