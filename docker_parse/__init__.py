@@ -96,7 +96,7 @@ def output_command(info, image_info, pretty=False):
     conf = info['Config']
     hconf = info['HostConfig']
 
-    options.append("--name {name}".format(name=container))
+    options.append("--name={name}".format(name=container))
 
     if not conf['AttachStdout']:
         short_options += 'd'
@@ -127,7 +127,7 @@ def output_command(info, image_info, pretty=False):
                 if 'HostPort' in hv and hv['HostPort']:
                     portbinding += hv['HostPort'] + ':'
                 portbinding += k
-                options.append("-p={portbinding}".format(portbinding=portbinding))
+                options.append("-p {portbinding}".format(portbinding=portbinding))
 
     # RestartPolicy
     if 'RestartPolicy' in hconf and hconf['RestartPolicy']['Name']:
@@ -155,7 +155,7 @@ def output_command(info, image_info, pretty=False):
     if type(conf['Env']) is list :
         for v in conf['Env']:
             if v not in image_info['Config']['Env']:
-                options.append("-e={env}".format(env=pipes.quote(v)))
+                options.append("-e {env}".format(env=pipes.quote(v)))
 
     # EntryPoint
     entry = []
@@ -172,7 +172,7 @@ def output_command(info, image_info, pretty=False):
 
     # WorkingDir
     if image_info['Config']['WorkingDir'] != conf['WorkingDir']:
-        options.append("-w={dir}".format(dir=pipes.quote(conf['WorkingDir'])))
+        options.append("-w {dir}".format(dir=pipes.quote(conf['WorkingDir'])))
 
     # Cmd
     cmd = []
@@ -235,7 +235,7 @@ def main():
         info = docker_inspect(container)
 
         # diff with image info to reduce information
-        image_info = docker_inspect(info['Config']['Image'])
+        image_info = docker_inspect(info['Config']['Image'], True)
 
         if as_compose:
             output_compose(info, image_info)
