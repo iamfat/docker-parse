@@ -2,25 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
-import json
 import yaml
-import subprocess
 import sys
 import pipes
 import getopt
-from pprint import pprint
-
-def docker_inspect(container, image=False):
-    try:
-        cmd = ["docker", "inspect"]
-        if image:
-            cmd.extend(["--type=image"])
-        cmd.extend([container])
-        output = subprocess.check_output(cmd, universal_newlines=True)
-        infos = json.loads(output, encoding='utf-8')
-        return infos[0]
-    except subprocess.CalledProcessError as e:
-        sys.exit()
+from docker import Client
 
 def output_compose(info, image_info):
     container = info['Name'][1:]
@@ -196,6 +182,8 @@ def output_command(info, image_info, pretty=False):
 
 def main():
 
+    cli = Client()
+
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:], "pc", ["pretty", "compose"])
     except getopt.GetoptError as e:
@@ -205,15 +193,8 @@ def main():
     if len(args) == 0:
         # enumerate all containers via `docker ps`
         try:
-            containers = subprocess.check_output("docker ps -q", shell=True).splitlines()
-            def readable_name(container):
-                try:
-                    return subprocess.check_output(
-                                "docker inspect -f {{.Name}} %s" % container,
-                                shell=True).lstrip('/').rstrip('\n')
-                except subprocess.CalledProcessError as e:
-                    return container
-            containers = map(readable_name, containers)
+            containers = cli.containers()
+            containers = map(lambda c:c['Names'][0][1:], containers)
         except subprocess.CalledProcessError as e:
             print ("%r" % str(e))
             sys.exit()
@@ -232,10 +213,10 @@ def main():
 
     for container in containers:
 
-        info = docker_inspect(container)
+        info = cli.inspect_container(container)
 
         # diff with image info to reduce information
-        image_info = docker_inspect(info['Config']['Image'], True)
+        image_info = cli.inspect_image(info['Config']['Image'])
 
         if as_compose:
             output_compose(info, image_info)
