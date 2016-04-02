@@ -22,7 +22,8 @@ def output_compose(info, image_info):
         options = []
         for v in hconf['Binds']:
             options.append(str(v))
-        if len(options) > 0: compose['volumes'] = options
+        if len(options) > 0: 
+            compose['volumes'] = options
 
     if 'PortBindings' in hconf and isinstance(hconf['PortBindings'], dict):
         options = []
@@ -35,7 +36,8 @@ def output_compose(info, image_info):
                     portbinding += hv['HostPort'] + ':'
                 portbinding += k
                 options.append(str(portbinding))
-        if len(options) > 0: compose['ports'] = options
+        if len(options) > 0: 
+            compose['ports'] = options
 
     # RestartPolicy
     if 'RestartPolicy' in hconf and hconf['RestartPolicy']['Name']:
@@ -54,19 +56,29 @@ def output_compose(info, image_info):
         for v in conf['Env']:
             if v not in image_info['Config']['Env']:
                 options.append(str(v))
-        if len(options) > 0:compose['env'] = options
+        if len(options) > 0:
+            compose['env'] = options
 
     # DNS
     if 'Dns' in hconf and isinstance(hconf['Dns'], list):
         options = []
         for dns in hconf['Dns']:
-            compose['dns'].append(str(dns))
-        if len(options) > 0:compose['dns'] = options
+            options.append(str(dns))
+        if len(options) > 0:
+            compose['dns'] = options
+
     # ExposedPorts
     if 'ExposedPorts' in conf and isinstance(conf['ExposedPorts'], dict):
+        options = []
         for port,foo in conf['ExposedPorts'].items():
             if 'ExposedPorts' not in image_info['Config'] or port not in image_info['Config']['ExposedPorts']:
-                options.append("--expose={port}".format(port=port))
+                options.append(str(port))
+        if len(options) > 0:
+            compose['expose'] = options
+
+    # WorkingDir
+    if image_info['Config']['WorkingDir'] != conf['WorkingDir']:
+        compose['working_dir'] = str(conf['WorkingDir']);
 
     name = str(info['Name'][1:])
     print(yaml.dump({ name : compose }, encoding='utf-8', default_flow_style=False))
