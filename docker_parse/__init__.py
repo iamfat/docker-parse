@@ -87,7 +87,7 @@ def output_compose(info, image_info):
 
 def output_command(info, image_info, pretty=False):
 
-    sep = pretty and ' \\\n    ' or ''
+    sep = pretty and ' \\\n    ' or ' '
 
     short_options = ''
     options = []
