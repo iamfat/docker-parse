@@ -65,7 +65,7 @@ def output_compose(info, image_info):
     # ExposedPorts
     if 'ExposedPorts' in conf and isinstance(conf['ExposedPorts'], dict):
         for port,foo in conf['ExposedPorts'].items():
-            if port not in image_info['Config']['ExposedPorts']:
+            if 'ExposedPorts' not in image_info['Config'] or port not in image_info['Config']['ExposedPorts']:
                 options.append("--expose={port}".format(port=port))
 
     name = str(info['Name'][1:])
@@ -134,7 +134,7 @@ def output_command(info, image_info, pretty=False):
     # ExposedPorts
     if 'ExposedPorts' in conf and isinstance(conf['ExposedPorts'], dict):
         for port,foo in conf['ExposedPorts'].items():
-            if port not in image_info['Config']['ExposedPorts']:
+            if 'ExposedPorts' not in image_info['Config'] or port not in image_info['Config']['ExposedPorts']:
                 options.append("--expose={port}".format(port=port))
 
     # Env
