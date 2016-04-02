@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='docker-parse',
-    version='0.4.0',
+    version='0.4.3',
     description='Parse docker-run options from a running Docker container',
     url='https://github.com/iamfat/docker-parse',
     author="Jia Huang",
@@ -25,7 +25,10 @@ setup(
     ],
     keywords='docker parse run options',
     packages=['docker_parse'],
-    install_requires=["docker-py"],
+    install_requires=[
+        'requests >= 2.6.1, < 2.8',
+        'docker-py'
+    ],
     entry_points={
         'console_scripts': [
             'docker-parse=docker_parse:main',
