@@ -26,7 +26,7 @@ docker -c|--compose [container]
 * PID Settings (`--pid=""`)
 * IPC Settings (`--ipc=""`)
 * Network settings
-    * ~`--dns=[]`~
+    * ~~`--dns=[]`~~
     * `--net="bridge"`
     * `--add-host=""`
     * `--mac-address=""`
@@ -39,7 +39,7 @@ docker -c|--compose [container]
     * `--cap-add`
     * `--cap-drop`
     * ~~`--privileged=false`~~
-    * `--device=[]`
+    * ~~`--device=[]`~~
     * `--lxc-conf=[]`
 * Overriding Dockerfile image defaults
     * ~~CMD (Default Command or Options)~~
@@ -52,5 +52,5 @@ docker -c|--compose [container]
     * ~~`-h`~~
     * ~~`-v=[]`~~
     * `--volumes-from=""`
-    * `-u=""`
-    * `-w=""`
+    * ~~`-u=""`~~
+    * ~~`-w=""`~~
