@@ -15,7 +15,7 @@ import getopt
 import yaml
 from docker import Client
 
-__version__ = '0.5.2'
+__version__ = '0.5.3'
 
 def output_compose(info, image_info):
     '''output as docker-compose format'''
@@ -231,7 +231,7 @@ def output_command(info, image_info, pretty=False):
         options=sep.join(options), sep=sep, image=conf['Image'])
 
     if len(cmd) > 0:
-        cmd_str += ' '.join(cmd)
+        cmd_str += ' ' + ' '.join(cmd)
 
     print(cmd_str)
     print()
