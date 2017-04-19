@@ -13,9 +13,9 @@ import pipes
 import getopt
 
 import yaml
-from docker import Client
+import docker
 
-__version__ = '0.5.3'
+__version__ = '0.5.4'
 
 def output_compose(info, image_info):
     '''output as docker-compose format'''
@@ -240,7 +240,7 @@ def output_command(info, image_info, pretty=False):
 def main():
     '''main entry'''
 
-    cli = Client()
+    cli = docker.from_env()
 
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:], "pcv", ["pretty", "compose"])
@@ -249,9 +249,9 @@ def main():
         sys.exit(2)
 
     if len(args) == 0:
-        containers = map(lambda c: c['Names'][0][1:], cli.containers())
+        containers = cli.containers.list(all=True)
     else:
-        containers = args
+        containers = map(lambda nm: cli.containers.get(nm), args)
 
     as_compose = False
     pretty = False
@@ -267,11 +267,10 @@ def main():
             break
 
     for container in containers:
-
-        info = cli.inspect_container(container)
+	info = container.attrs
 
         # diff with image info to reduce information
-        image_info = cli.inspect_image(info['Config']['Image'])
+        image_info = cli.images.get(info['Config']['Image']).attrs
 
         if as_compose:
             output_compose(info, image_info)
