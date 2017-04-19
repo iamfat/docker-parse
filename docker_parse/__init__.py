@@ -15,7 +15,7 @@ import getopt
 import yaml
 import docker
 
-__version__ = '0.5.4'
+__version__ = '0.5.5'
 
 def output_compose(info, image_info):
     '''output as docker-compose format'''
